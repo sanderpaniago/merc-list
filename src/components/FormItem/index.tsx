@@ -1,4 +1,4 @@
-import { Button, Icon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack, Text } from "@chakra-ui/react";
+import { Button, Icon, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Stack, Text, useBreakpointValue } from "@chakra-ui/react";
 import { IoIosAdd } from 'react-icons/io'
 import { SubmitHandler, FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
@@ -27,6 +27,11 @@ type FormItemProps = {
 export function FormItem({ isOpen, onClose, defaultValue, buttonText }: FormItemProps) {
   const formRef = useRef<FormHandles>(null)
 
+  const isWideVersion = useBreakpointValue({
+    base: false,
+    lg: true,
+  });
+
   const { newShopItem, editShopItem } = useShopList()
 
   const handleSubmit: SubmitHandler<FormData> = (data, { reset }) => {
@@ -53,10 +58,13 @@ export function FormItem({ isOpen, onClose, defaultValue, buttonText }: FormItem
       <ModalOverlay />
       <ModalContent
         bg='gray.800'
-        bottom={0}
+        top={isWideVersion ? '50%' : 'auto'}
+        bottom={isWideVersion ? 'auto' : 0}
+        left={isWideVersion ? '50%': 'auto'}
+        transform={isWideVersion ? 'translate(-50%, -50%) !important;' : ''}
         position={'absolute'}
         m='0'
-        borderRadius={'16px 16px 0 0'}
+        borderRadius={isWideVersion ? 'lg' : '16px 16px 0 0'}
         pt={2}
       >
         <ModalHeader>Novo item</ModalHeader>
@@ -73,7 +81,7 @@ export function FormItem({ isOpen, onClose, defaultValue, buttonText }: FormItem
           >
             <Stack spacing={'4'} pb='8'>
               <Input name='name' placeholder="Nome" defaultValue={defaultValue?.name} />
-              <Input name='qnt' placeholder='Quantidade' type='number' defaultValue={defaultValue?.qnt} />
+              <Input name='qnt' placeholder='Quantidade' type='number' step='0.01' defaultValue={defaultValue?.qnt} />
               <Input name='price' placeholder='Valor unid.' type='number' step='0.01' defaultValue={defaultValue?.price} />
             </Stack>
             <Button

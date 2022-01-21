@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Text, VStack } from "@chakra-ui/react"
+import { Box, Button, Flex, Icon, Text, useBreakpointValue, VStack } from "@chakra-ui/react"
 import CartItem from "../components/CartItem"
 import { IoIosAdd } from 'react-icons/io'
 import { FormItem } from "../components/FormItem"
@@ -9,6 +9,11 @@ import Head from "next/head"
 export default function Home() {
   const { shopList } = useShopList()
   const [modalOpen, setModalOpen] = useState(false)
+
+  const isWideVersion = useBreakpointValue({
+    lg: true,
+    base: false,
+  });
 
   const totalShop = shopList?.reduce((acc, item) => {
     return acc + item.total
@@ -42,16 +47,43 @@ export default function Home() {
   }, [shopList])
 
   return (
-    <Flex flexDir={'column'} align={'flex-start'} paddingX={'6'} mt='12' >
+    <Flex
+      flexDir={'column'}
+      align={'flex-start'}
+      paddingX={'6'}
+      mt='12'
+      maxW={'container.sm'}
+      mx='auto'
+    >
       <Head>
         <title>Merc List</title>
       </Head>
       <Text as='h1' fontWeight={'bold'} fontSize={'4xl'} >Compra dia</Text>
       <Text fontWeight={'bold'} fontSize={'2xl'}>{month}</Text>
 
-      <Box mt='8'>
+      <Box mt='8' position={'relative'} w='full'>
         <Text>Total da compra</Text>
         <Text fontWeight={'bold'} fontSize={"3xl"} mt='2'>{formatMoney().format(totalShop ?? 0)}</Text>
+
+        <Button
+          bg='green.500'
+          color='gray.50'
+          d='flex'
+          w={14}
+          h={14}
+          borderRadius={isWideVersion ? 'base' : 'full'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          position={isWideVersion ? 'absolute' : 'fixed'}
+          zIndex={'2'}
+          bottom={isWideVersion ? 0 : 6}
+          left={isWideVersion ? 'auto' : '50%'}
+          right={isWideVersion ? 0 : 'auto'}
+          transform={isWideVersion ? '' : 'translateX(-50%)'}
+          onClick={() => setModalOpen(true)}
+        >
+          <Icon as={IoIosAdd} w={8} h={8} />
+        </Button>
       </Box>
 
       <VStack w='full' mt='6' spacing={'6'} pb='8'>
@@ -67,20 +99,6 @@ export default function Home() {
           />
         ))}
       </VStack>
-
-      <Button
-        bg='green.500'
-        color='gray.50'
-        position={'fixed'}
-        w='80%'
-        zIndex={'2'}
-        bottom='6'
-        left={'50%'}
-        transform='translateX(-50%)'
-        p={'6'}
-        leftIcon={<Icon as={IoIosAdd} w={8} h={8} />}
-        onClick={() => setModalOpen(true)}
-      > Adicionar novo item</Button>
 
       <FormItem isOpen={modalOpen} onClose={handleClose} buttonText="Adicionar novo item" />
     </Flex>
