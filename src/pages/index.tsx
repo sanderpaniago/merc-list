@@ -4,6 +4,7 @@ import { IoIosAdd } from 'react-icons/io'
 import { FormItem } from "../components/FormItem"
 import { useMemo, useState } from "react"
 import { useShopList } from "../context/ShopListContext"
+import Head from "next/head"
 
 export default function Home() {
   const { shopList } = useShopList()
@@ -42,7 +43,10 @@ export default function Home() {
 
   return (
     <Flex flexDir={'column'} align={'flex-start'} paddingX={'6'} mt='12' >
-      <Text as='h1' fontWeight={'bold'} fontSize={'4xl'} >Compra mês</Text>
+      <Head>
+        <title>Merc List</title>
+      </Head>
+      <Text as='h1' fontWeight={'bold'} fontSize={'4xl'} >Compra dia</Text>
       <Text fontWeight={'bold'} fontSize={'2xl'}>{month}</Text>
 
       <Box mt='8'>
